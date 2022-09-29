@@ -20,11 +20,6 @@
     </properties>
     <dependencies>
         <dependency>
-            <groupId>com.uber.cadence</groupId>
-            <artifactId>cadence-client</artifactId>
-            <version>3.7.2</version>
-        </dependency>
-        <dependency>
             <groupId>by.murzo</groupId>
             <artifactId>activity_worker</artifactId>
             <version>0.0.1-SNAPSHOT</version>

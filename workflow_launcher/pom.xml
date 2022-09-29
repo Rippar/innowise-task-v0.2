@@ -28,17 +28,6 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>com.uber.cadence</groupId>
-            <artifactId>cadence-client</artifactId>
-            <version>3.7.2</version>
-        </dependency>
-        <dependency>
-            <groupId>by.murzo</groupId>
-            <artifactId>activity_worker</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>1.18.24</version>
@@ -47,6 +36,12 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>by.murzo</groupId>
+            <artifactId>workflow_worker</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 

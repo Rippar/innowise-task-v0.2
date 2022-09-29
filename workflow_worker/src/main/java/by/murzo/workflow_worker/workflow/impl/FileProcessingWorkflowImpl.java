@@ -1,13 +1,11 @@
-package by.murzo.activity_worker.workflow.impl;
+package by.murzo.workflow_worker.workflow.impl;
 
 import by.murzo.activity_worker.activity.ConvertingFileActivity;
 import by.murzo.activity_worker.activity.CreatingNewNameActivity;
 import by.murzo.activity_worker.activity.DownloadingFromCloudActivity;
 import by.murzo.activity_worker.activity.UploadingToCLoudActivity;
-import by.murzo.activity_worker.workflow.FileProcessingWorkflow;
+import by.murzo.workflow_worker.workflow.FileProcessingWorkflow;
 import com.uber.cadence.workflow.Workflow;
-import org.slf4j.Logger;
-
 
 public class FileProcessingWorkflowImpl implements FileProcessingWorkflow {
 
@@ -15,8 +13,6 @@ public class FileProcessingWorkflowImpl implements FileProcessingWorkflow {
     private final CreatingNewNameActivity creatingNewNameActivity;
     private final DownloadingFromCloudActivity downloadingFromCloudActivity;
     private final UploadingToCLoudActivity uploadingToCLoudActivity;
-
-    private static Logger logger = Workflow.getLogger(FileProcessingWorkflowImpl.class);
 
     public FileProcessingWorkflowImpl() {
         this.convertingFileActivity = Workflow.newActivityStub(ConvertingFileActivity.class);
@@ -26,11 +22,8 @@ public class FileProcessingWorkflowImpl implements FileProcessingWorkflow {
     }
 
     @Override
-    public void processFile(String filename) throws Exception {
+    public void processFile(String filename) {
 
-        //todo delete
-        logger.info("enter in process file????????????????????/");
-        //todo exception???
         downloadingFromCloudActivity.downloadFromCloud(filename);
 
         String newKeyFileName = creatingNewNameActivity.createNewFileName(filename);
@@ -38,7 +31,6 @@ public class FileProcessingWorkflowImpl implements FileProcessingWorkflow {
         String newFileName = convertingFileActivity.convertCsvToXlsx(filename, newKeyFileName);
 
         uploadingToCLoudActivity.uploadToCloud(newFileName);
-        logger.info("all activities finished");
 
     }
 }

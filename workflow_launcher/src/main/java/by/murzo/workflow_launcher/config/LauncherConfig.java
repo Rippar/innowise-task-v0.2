@@ -20,7 +20,7 @@ public class LauncherConfig {
                 new WorkflowServiceTChannel(ClientOptions.defaultInstance()),
                 WorkflowClientOptions
                         .newBuilder()
-                        .setDomain("test-domain")
+                        .setDomain(domain)
                         .build()
         );
     }

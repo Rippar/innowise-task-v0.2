@@ -1,12 +1,12 @@
 package by.murzo.activity_worker.activity.impl;
 
 import by.murzo.activity_worker.activity.DownloadingFromCloudActivity;
-import com.amazonaws.auth.profile.ProfileCredentialsProvider;
 import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.GetObjectRequest;
 import com.amazonaws.services.s3.model.S3Object;
 import com.opencsv.CSVWriter;
+import com.uber.cadence.workflow.Workflow;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -21,31 +21,34 @@ import java.util.List;
 @Component
 public class DownloadingFromCloudActivityImpl implements DownloadingFromCloudActivity {
 
-//    @Value("${cloud.download_bucket_name}")
-//    private String bucket_name;
-//
-//    @Value("${cloud.download_storage_name}")
-//    private String storage_name;
-//
-//    @Value("${cloud.download_region_name}")
-//    private String region_name;
+    @Value("${cloud.bucket_name}")
+    private String bucketName;
+
+    @Value("${file.storage_folder}")
+    private String downloadFolder;
+
+    private final AmazonS3 s3Client;
+
+    @Autowired
+    public DownloadingFromCloudActivityImpl(AmazonS3 s3Client) {
+        this.s3Client = s3Client;
+    }
 
     @Override
-    public void downloadFromCloud(String filename) throws IOException {
+    public void downloadFromCloud(String filename) {
 
-        AmazonS3 s3Client = AmazonS3ClientBuilder.standard()
-                .withCredentials(new ProfileCredentialsProvider())
-                .withEndpointConfiguration(
-                        new AmazonS3ClientBuilder.EndpointConfiguration("storage.yandexcloud.net", "ru-central1")
-                )
-                .build();
+        S3Object fullObject = s3Client.getObject(new GetObjectRequest(bucketName, filename));
 
-        S3Object fullObject = s3Client.getObject(new GetObjectRequest("innowise", filename));
+        List<String[]> csvData;
+        try {
+            csvData = convertInputIntoCSVFormat(fullObject.getObjectContent());
+            CSVWriter writer = new CSVWriter(new FileWriter(downloadFolder + fullObject.getKey()));
+            writer.writeAll(csvData);
+            writer.close();
+        } catch (IOException e) {
+            throw Workflow.wrap(e);
+        }
 
-        List<String[]> csvData = convertInputIntoCSVFormat(fullObject.getObjectContent());
-        CSVWriter writer = new CSVWriter(new FileWriter("processed_files/"+fullObject.getKey()));
-        writer.writeAll(csvData);
-        writer.close();
 
     }
 
