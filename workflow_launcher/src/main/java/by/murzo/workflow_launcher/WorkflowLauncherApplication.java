@@ -1,4 +1,4 @@
-package by.murzp.workflow_launcher;
+package by.murzo.workflow_launcher;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
